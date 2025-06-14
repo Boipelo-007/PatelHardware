@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patel Hardware - Search Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            outline: none;
+        }
+
+        .search-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #34495e;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .search-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-header h1 {
+            color: #2d5a27;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .search-form-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .search-form-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #1f4e79);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .search-results-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .results-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .results-stats {
+            background: #ecf0f1;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .stats-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .results-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .results-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .results-table tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .results-table tr:nth-child(even):hover {
+            background: #f0f2f5;
+        }
+
+        .item-number {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 16px;
+        }
+
+        .item-available {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .item-available.yes {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .item-available.no {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .buy-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .no-results p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+            text-align: center;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #8e44ad;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: 2px solid #8e44ad;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .back-link a:hover {
+            background: #8e44ad;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .search-suggestions {
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            position: absolute;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+
+        .suggestion-item:hover, .suggestion-item.active {
+            background: #f8f9fa;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .price-range-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .price-input {
+            width: 80px;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+
+        .search-shortcuts {
+            background: #ecf0f1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .search-shortcuts kbd {
+            background: #bdc3c7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 11px;
+        }
+
+        .search-history {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .advanced-filters {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .advanced-filters h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .results-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .results-count {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-options label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .sort-options select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .price-range-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+            }
+
+            .results-actions {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            .sort-options {
+                justify-content: center;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-input {
+                width: 250px;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .results-table {
+                font-size: 14px;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px 5px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .search-results-section {
+                overflow-x: auto;
+            }
+
+            .results-table {
+                min-width: 700px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="nav-container">
+        <div class="nav-menu">
+            <a href="main.html">Home</a>
+            <a href="viewall.html">View All Items</a>
+            <a href="buyitem.html">Buy an Item</a>
+            <a href="viewcart.html">View Cart</a>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" id="headerSearchInput" placeholder="Search Items">
+            <button class="search-btn" id="headerSearchBtn">🔍</button>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="search-header">
+        <h1>Search results</h1>
+        <form class="search-form" id="searchForm">
+            <div class="form-group">
+                <label for="searchQuery">Search Query:</label>
+                <div style="position: relative;">
+                    <input type="text" id="searchQuery" name="query" placeholder="Enter search terms" required>
+                    <div class="search-suggestions" id="searchSuggestions"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="searchType">Search Type:</label>
+                <select id="searchType" name="searchType">
+                    <option value="">All Fields</option>
+                    <option value="name">Item Name</option>
+                    <option value="description">Description</option>
+                    <option value="itemNumber">Item Number</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="categoryFilter">Category:</label>
+                <select id="categoryFilter" name="category">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <button type="submit" class="search-form-btn">Search</button>
+        </form>
+
+        <div class="search-shortcuts">
+            <strong>Keyboard Shortcuts:</strong>
+            <kbd>Ctrl+F</kbd> Focus search |
+            <kbd>↑↓</kbd> Navigate suggestions |
+            <kbd>Enter</kbd> Select suggestion |
+            <kbd>Esc</kbd> Close suggestions
+        </div>
+    </div>
+
+    <div class="loading" id="loading"></div>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+    <div class="search-results-section" id="resultsSection" style="display: none;">
+        <div class="results-header">
+            <h2>Search Results</h2>
+            <p id="resultsDescription">Results for your search</p>
+        </div>
+
+        <div class="results-stats" id="resultsStats">
+            <!-- Statistics will be populated here -->
+        </div>
+
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th>ITEM#</th>
+                <th>NAME</th>
+                <th>COLOR</th>
+                <th>DESCRIPTION</th>
+                <th>PRICE</th>
+                <th>AVAILABLE</th>
+                <th>ACTION</th>
+            </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="no-results" id="noResults" style="display: none;">
+        <h3>No items found</h3>
+        <p>Try adjusting your search terms or browse all items</p>
+        <div class="back-link">
+            <a href="viewall.html">Browse All Items</a>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="main.html">Go back to Main Menu</a>
+        <a href="viewall.html">Browse All Items</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.getElementById('searchForm');
+        const searchQuery = document.getElementById('searchQuery');
+        const searchType = document.getElementById('searchType');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('resultsSection');
+        const noResults = document.getElementById('noResults');
+        const resultsTableBody = document.getElementById('resultsTableBody');
+        const resultsStats = document.getElementById('resultsStats');
+        const resultsDescription = document.getElementById('resultsDescription');
+        const errorMessage = document.getElementById('errorMessage');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+        const headerSearchInput = document.getElementById('headerSearchInput');
+        const headerSearchBtn = document.getElementById('headerSearchBtn');
+
+        let searchTimeout;
+
+        // Get query from URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('query');
+
+        if (initialQuery) {
+            searchQuery.value = initialQuery;
+            performSearch();
+        }
+
+        // Load categories
+        function loadCategories() {
+            fetch('viewall?format=json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.items) {
+                    const categories = [...new Set(data.items.map(item => item.category).filter(cat => cat))];
+                    categories.sort();
+
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category;
+                        categoryFilter.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading categories:', error);
+            });
+        }
+
+        // Search form submission
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            performSearch();
+        });
+
+        // Perform search
+        function performSearch() {
+            const query = searchQuery.value.trim();
+
+            if (!query) {
+                showError('Please enter a search query.');
+                return;
+            }
+
+            loading.style.display = 'block';
+            resultsSection.style.display = 'block';
+        }
+
+        // Buy item function
+        window.buyItem = function(itemId) {
+            if (confirm('Add this item to your cart?')) {
+                // Add to cart functionality
+                const formData = new FormData();
+                formData.append('action', 'addToCart');
+                formData.append('itemId', itemId);
+                formData.append('quantity', 1);
+
+                fetch('buyitem', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Item added to cart successfully!');
+                        // Optionally redirect to cart
+                        if (confirm('Would you like to view your cart?')) {
+                            window.location.href = 'viewcart.html';
+                        }
+                    } else {
+                        alert('Failed to add item to cart: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding to cart:', error);
+                    alert('Error adding item to cart. Please try again.');
+                });
+            }
+        };
+
+        // Search suggestions with debouncing
+        let suggestionTimeout;
+        searchQuery.addEventListener('input', function() {
+            clearTimeout(suggestionTimeout);
+            const query = this.value.trim();
+
+            if (query.length >= 2) {
+                suggestionTimeout = setTimeout(() => {
+                    getSuggestions(query);
+                }, 300);
+            } else {
+                hideSuggestions();
+            }
+        });
+
+        function getSuggestions(partialQuery) {
+            const formData = new FormData();
+            formData.append('action', 'getSearchSuggestions');
+            formData.append('partialQuery', partialQuery);
+
+            fetch('search', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.suggestions && data.suggestions.length > 0) {
+                    displaySuggestions(data.suggestions);
+                } else {
+                    hideSuggestions();
+                }
+            })
+            .catch(error => {
+                console.error('Error getting suggestions:', error);
+                hideSuggestions();
+            });
+        }
+
+        function displaySuggestions(suggestions) {
+            searchSuggestions.innerHTML = '';
+
+            suggestions.slice(0, 8).forEach(suggestion => { // Limit to 8 suggestions
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.textContent = suggestion;
+                item.addEventListener('click', function() {
+                    searchQuery.value = suggestion;
+                    hideSuggestions();
+                    performSearch();
+                });
+                searchSuggestions.appendChild(item);
+            });
+
+            searchSuggestions.style.display = 'block';
+        }
+
+        function hideSuggestions() {
+            searchSuggestions.style.display = 'none';
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchQuery.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+
+        // Keyboard navigation for suggestions
+        searchQuery.addEventListener('keydown', function(e) {
+            const suggestions = searchSuggestions.querySelectorAll('.suggestion-item');
+            const activeSuggestion = searchSuggestions.querySelector('.suggestion-item.active');
+            let activeIndex = -1;
+
+            if (activeSuggestion) {
+                activeIndex = Array.from(suggestions).indexOf(activeSuggestion);
+            }
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (activeIndex < suggestions.length - 1) {
+                    if (activeSuggestion) activeSuggestion.classList.remove('active');
+                    suggestions[activeIndex + 1].classList.add('active');
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (activeIndex > 0) {
+                    if (activeSuggestion) activeSuggestion.classList.remove('active');
+                    suggestions[activeIndex - 1].classList.add('active');
+                }
+            } else if (e.key === 'Enter') {
+                if (activeSuggestion) {
+                    e.preventDefault();
+                    this.value = activeSuggestion.textContent;
+                    hideSuggestions();
+                    performSearch();
+                }
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+            }
+        });
+
+        // Header search functionality
+        function performHeaderSearch() {
+            const query = headerSearchInput.value.trim();
+            if (query) {
+                searchQuery.value = query;
+                performSearch();
+                headerSearchInput.value = ''; // Clear header search
+            }
+        }
+
+        headerSearchBtn.addEventListener('click', performHeaderSearch);
+        headerSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performHeaderSearch();
+            }
+        });
+
+        // Advanced search filters
+        function setupAdvancedFilters() {
+            // Add price range inputs
+            const priceRangeContainer = document.createElement('div');
+            priceRangeContainer.className = 'form-group';
+            priceRangeContainer.innerHTML = `
+                <label>Price Range:</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="minPrice" placeholder="Min" min="0" step="0.01" style="width: 80px;">
+                    <span>to</span>
+                    <input type="number" id="maxPrice" placeholder="Max" min="0" step="0.01" style="width: 80px;">
+                </div>
+            `;
+
+            // Insert after category filter
+            categoryFilter.parentNode.parentNode.insertBefore(priceRangeContainer,
+                categoryFilter.parentNode.parentNode.lastElementChild);
+
+            // Add event listeners for price filters
+            const minPrice = document.getElementById('minPrice');
+            const maxPrice = document.getElementById('maxPrice');
+
+            minPrice.addEventListener('change', function() {
+                if (this.value && maxPrice.value && parseFloat(this.value) > parseFloat(maxPrice.value)) {
+                    maxPrice.value = this.value;
+                }
+            });
+
+            maxPrice.addEventListener('change', function() {
+                if (this.value && minPrice.value && parseFloat(this.value) < parseFloat(minPrice.value)) {
+                    minPrice.value = this.value;
+                }
+            });
+        }
+
+        // Enhanced search with price filters
+        function performAdvancedSearch() {
+            const query = searchQuery.value.trim();
+
+            if (!query) {
+                showError('Please enter a search query.');
+                return;
+            }
+
+            loading.style.display = 'block';
+            resultsSection.style.display = 'none';
+            noResults.style.display = 'none';
+            hideError();
+
+            const formData = new FormData();
+            formData.append('action', 'search');
+            formData.append('query', query);
+            formData.append('searchType', searchType.value);
+            formData.append('category', categoryFilter.value);
+
+            // Add price filters if they exist
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            if (minPriceInput && minPriceInput.value) {
+                formData.append('minPrice', minPriceInput.value);
+            }
+            if (maxPriceInput && maxPriceInput.value) {
+                formData.append('maxPrice', maxPriceInput.value);
+            }
+
+            fetch('search', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+
+                if (data.success) {
+                    if (data.items && data.items.length > 0) {
+                        displayResults(data);
+
+                        // Update URL with search parameters
+                        const url = new URL(window.location);
+                        url.searchParams.set('query', query);
+                        if (searchType.value) url.searchParams.set('searchType', searchType.value);
+                        if (categoryFilter.value) url.searchParams.set('category', categoryFilter.value);
+                        window.history.pushState({}, '', url);
+                    } else {
+                        noResults.style.display = 'block';
+                    }
+                } else {
+                    showError(data.message || 'Search failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                console.error('Error performing search:', error);
+                showError('Error performing search. Please try again.');
+            });
+        }
+
+        // Replace the original performSearch with advanced version
+        performSearch = performAdvancedSearch;
+
+        // Utility functions
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                hideError();
+            }, 5000);
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Export search results functionality
+        window.exportResults = function() {
+            if (resultsSection.style.display === 'none') {
+                alert('No search results to export.');
+                return;
+            }
+
+            const table = document.querySelector('.results-table');
+            let csv = '';
+
+            // Add headers
+            const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent.trim());
+            csv += headers.slice(0, -1).join(',') + '\n'; // Exclude 'ACTION' column
+
+            // Add data rows
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td')).slice(0, -1); // Exclude action column
+                const rowData = cells.map(cell => {
+                    // Remove HTML tags and clean text
+                    const text = cell.textContent.replace(/\s+/g, ' ').trim();
+                    return `"${text.replace(/"/g, '""')}"`;
+                });
+                csv += rowData.join(',') + '\n';
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `patel_hardware_search_results_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            // Show feedback
+            const exportBtn = document.querySelector('.export-btn');
+            const originalText = exportBtn.textContent;
+            exportBtn.textContent = 'Exported!';
+            exportBtn.style.background = '#27ae60';
+            setTimeout(() => {
+                exportBtn.textContent = originalText;
+                exportBtn.style.background = '';
+            }, 2000);
+        };
+
+        // Initialize advanced features
+        function initializeAdvancedFeatures() {
+            setupAdvancedFilters();
+
+            // Load URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('searchType')) {
+                searchType.value = urlParams.get('searchType');
+            }
+            if (urlParams.get('category')) {
+                categoryFilter.value = urlParams.get('category');
+            }
+        }
+
+        // Initialize everything
+        loadCategories();
+
+        // Wait for categories to load, then initialize advanced features
+        setTimeout(() => {
+            initializeAdvancedFeatures();
+        }, 1000);
+
+        // Check authentication
+        fetch('main?format=json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Not authenticated');
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Authentication error:', error);
+            window.location.href = 'login.html';
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'f':
+                        e.preventDefault();
+                        searchQuery.focus();
+                        break;
+                    case 'Enter':
+                        if (e.target === searchQuery) {
+                            e.preventDefault();
+                            performSearch();
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Add search history (simple localStorage implementation)
+        function addToSearchHistory(query) {
+            if (typeof(Storage) !== "undefined") {
+                let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+                history = history.filter(item => item !== query); // Remove if exists
+                history.unshift(query); // Add to beginning
+                history = history.slice(0, 10); // Keep only last 10 searches
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+            }
+        }
+
+        function getSearchHistory() {
+            if (typeof(Storage) !== "undefined") {
+                return JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            }
+            return [];
+        }
+
+        // Show search history when input is focused
+        searchQuery.addEventListener('focus', function() {
+            if (this.value.trim() === '') {
+                const history = getSearchHistory();
+                if (history.length > 0) {
+                    displaySuggestions(history);
+                }
+            }
+        });
+
+        // Add search to history when performed
+        const originalPerformSearch = performSearch;
+        performSearch = function() {
+            const query = searchQuery.value.trim();
+            if (query) {
+                addToSearchHistory(query);
+            }
+            originalPerformSearch();
+        };
+    });
+</script>
+</body>
+</html>tsSection.style.display = 'none';
+noResults.style.display = 'none';
+hideError();
+
+const formData = new FormData();
+formData.append('action', 'search');
+formData.append('query', query);
+formData.append('searchType', searchType.value);
+formData.append('category', categoryFilter.value);
+
+fetch('search', {
+method: 'POST',
+body: formData
+})
+.then(response => response.json())
+.then(data => {
+loading.style.display = 'none';
+
+if (data.success) {
+if (data.items && data.items.length > 0) {
+displayResults(data);
+} else {
+noResults.style.display = 'block';
+}
+} else {
+showError(data.message || 'Search failed. Please try again.');
+}
+})
+.catch(error => {
+loading.style.display = 'none';
+console.error('Error performing search:', error);
+showError('Error performing search. Please try again.');
+});
+}
+
+// Display search results
+function displayResults(data) {
+const items = data.items;
+const stats = data.searchStats || {};
+
+// Update results description
+resultsDescription.textContent = `Found ${items.length} result(s) for "${data.query}"`;
+
+// Display statistics
+resultsStats.innerHTML = `
+<div class="stats-row">
+    <span><strong>Total Results:</strong></span>
+    <span>${stats.totalResults || items.length}</span>
+</div>
+<div class="stats-row">
+    <span><strong>Available Items:</strong></span>
+    <span>${stats.availableItems || items.filter(item => item.available).length}</span>
+</div>
+<div class="stats-row">
+    <span><strong>Categories Found:</strong></span>
+    <span>${stats.categories || new Set(items.map(item => item.category)).size}</span>
+</div>
+`;
+
+// Add results actions bar
+const resultsActions = document.createElement('div');
+resultsActions.className = 'results-actions';
+resultsActions.innerHTML = `
+<div class="results-count">
+    Showing ${items.length} result(s)
+</div>
+<div class="sort-options">
+    <label for="sortResults">Sort by:</label>
+    <select id="sortResults">
+        <option value="relevance">Relevance</option>
+        <option value="name">Name A-Z</option>
+        <option value="name_desc">Name Z-A</option>
+        <option value="price_asc">Price Low to High</option>
+        <option value="price_desc">Price High to Low</option>
+        <option value="availability">Availability</option>
+    </select>
+    <button class="export-btn" onclick="exportResults()">Export CSV</button>
+</div>
+`;
+
+// Insert results actions before the table
+const table = resultsSection.querySelector('.results-table');
+resultsSection.insertBefore(resultsActions, table);
+
+// Display items in table
+resultsTableBody.innerHTML = '';
+
+items.forEach((item, index) => {
+const row = document.createElement('tr');
+row.innerHTML = `
+<td class="item-number">${item.itemNumber}</td>
+<td class="item-name">${highlightSearchTerm(item.name, data.query)}</td>
+<td>${item.color || '-'}</td>
+<td>${highlightSearchTerm(item.description || '-', data.query)}</td>
+<td class="item-price">R${parseFloat(item.price).toFixed(2)}</td>
+<td>
+                            <span class="item-available ${item.available ? 'yes' : 'no'}">
+                                ${item.available ? 'Yes' : 'No'}
+                            </span>
+    ${item.stockQuantity ? `<br><small>${item.stockQuantity} in stock</small>` : ''}
+</td>
+<td>
+    <button class="buy-btn" onclick="buyItem(${item.itemId})"
+            ${!item.available? 'disabled' : ''}>
+    ${item.available ? 'Buy this item' : 'Out of Stock'}
+    </button>
+</td>
+`;
+
+// Add fade-in animation
+row.style.opacity = '0';
+row.style.transform = 'translateY(20px)';
+resultsTableBody.appendChild(row);
+
+// Animate row appearance
+setTimeout(() => {
+row.style.transition = 'all 0.3s ease';
+row.style.opacity = '1';
+row.style.transform = 'translateY(0)';
+}, index * 50); // Stagger animation
+});
+
+// Add sort functionality
+const sortSelect = document.getElementById('sortResults');
+sortSelect.addEventListener('change', function() {
+sortResults(items, this.value, data.query);
+});
+
+resultsSection.style.display = 'block';
+}
+
+// Highlight search terms in results
+function highlightSearchTerm(text, searchTerm) {
+if (!searchTerm || searchTerm.length < 2) return text;
+
+const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\            // Display search results
+function displayResults(data) {
+const items = data.items;
+const stats = data.searchStats || {};
+
+// Update results description
+resultsDescription.textContent = `Found ${items.length} result(s) for "${data.query}"`;
+
+// Display statistics
+resultsStats.innerHTML = `
+<div class="stats-row">
+    <span><strong>Total Results:</strong></span>
+    <span>${stats.totalResults || items.length}</span>
+</div>
+<div class="stats-row">
+    <span><strong>Available Items:</strong></span>
+    <span>${stats.availableItems || items.filter(item => item.available).length}</span>
+</div>
+<div class="stats-row">
+    <span><strong>Categories Found:</strong></span>
+    <span>${stats.categories || new Set(items.map(item => item.category)).size}</span>
+</div>
+`;
+
+// Display items
+resultsTableBody.innerHTML = '';
+
+items.forEach(item => {
+const row = document.createElement('tr');
+row.innerHTML = `
+<td class="item-number">${item.itemNumber}</td>
+<td class="item-name">${item.name}</td>
+<td>${item.color || '-'}</td>
+<td>${item.description || '-'}</td>
+<td class="item-price">R${parseFloat(item.price).toFixed(2)}</td>
+<td>
+                            <span class="item-available ${item.available ? 'yes' : 'no'}">
+                                ${item.available ? 'Yes' : 'No'}
+                            </span>
+</td>
+<td>
+    <button class="buy-btn" onclick="buyItem(${item.itemId})"
+            ${!item.available ? 'disabled' : ''}>
+    ${item.available ? 'Buy this item' : 'Out of Stock'}
+    </button>
+</td>
+`;
+resultsTableBody.appendChild(row);
+});
+
+resul')})`, 'gi');
+return text.replace(regex, '<mark style="background: #fff3cd; padding: 1px 2px;">$1</mark>');
+}
+
+// Sort results functionality
+function sortResults(items, sortBy, searchQuery) {
+let sortedItems = [...items];
+
+switch(sortBy) {
+case 'name':
+sortedItems.sort((a, b) => a.name.localeCompare(b.name));
+break;
+case 'name_desc':
+sortedItems.sort((a, b) => b.name.localeCompare(a.name));
+break;
+case 'price_asc':
+sortedItems.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+break;
+case 'price_desc':
+sortedItems.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+break;
+case 'availability':
+sortedItems.sort((a, b) => {
+if (a.available === b.available) {
+return a.name.localeCompare(b.name);
+}
+return b.available - a.available;
+});
+break;
+case 'relevance':
+default:
+// Keep original order (relevance)
+break;
+}
+
+// Re-display sorted results
+resultsTableBody.innerHTML = '';
+sortedItems.forEach((item, index) => {
+const row = document.createElement('tr');
+row.innerHTML = `
+<td class="item-number">${item.itemNumber}</td>
+<td class="item-name">${highlightSearchTerm(item.name, searchQuery)}</td>
+<td>${item.color || '-'}</td>
+<td>${highlightSearchTerm(item.description || '-', searchQuery)}</td>
+<td class="item-price">R${parseFloat(item.price).toFixed(2)}</td>
+<td>
+                            <span class="item-available ${item.available ? 'yes' : 'no'}">
+                                ${item.available ? 'Yes' : 'No'}
+                            </span>
+    ${item.stockQuantity ? `<br><small>${item.stockQuantity} in stock</small>` : ''}
+</td>
+<td>
+    <button class="buy-btn" onclick="buyItem(${item.itemId})"
+            ${!item.available ? 'disabled' : ''}>
+    ${item.available ? 'Buy this item' : 'Out of Stock'}
+    </button>
+</td>
+`;
+resultsTableBody.appendChild(row);
+});
+}

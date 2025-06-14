@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patel Hardware - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="0.5" fill="%23ffffff" opacity="0.3"/><circle cx="80" cy="40" r="0.3" fill="%23ffffff" opacity="0.4"/><circle cx="40" cy="80" r="0.4" fill="%23ffffff" opacity="0.2"/><circle cx="60" cy="10" r="0.2" fill="%23ffffff" opacity="0.5"/></pattern></defs><rect width="100" height="100" fill="%23000000"/><rect width="100" height="100" fill="url(%23grain)"/></svg>') #000;
+            background-size: 50px 50px;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2d5a27;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2d5a27;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2d5a27;
+            box-shadow: 0 0 10px rgba(45, 90, 39, 0.2);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: #8e44ad;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #9b59b6;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #2d5a27;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .field-validation {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="header">
+        <h1>PATEL HARDWARE</h1>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            <div id="usernameValidation" class="field-validation">Please fill out this field.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <div id="passwordValidation" class="field-validation">Please fill out this field.</div>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">Login</button>
+
+        <div class="loading" id="loading"></div>
+    </form>
+
+    <div class="register-link">
+        Not registered? <a href="register.html">Register here</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Form validation
+        function validateField(input, validationElement) {
+            if (input.value.trim() === '') {
+                input.classList.add('error');
+                validationElement.style.display = 'block';
+                return false;
+            } else {
+                input.classList.remove('error');
+                validationElement.style.display = 'none';
+                return true;
+            }
+        }
+
+        function showMessage(element, message, isError = true) {
+            element.textContent = message;
+            element.style.display = 'block';
+            if (!isError) {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        // Real-time validation
+        usernameInput.addEventListener('blur', function() {
+            validateField(this, document.getElementById('usernameValidation'));
+        });
+
+        passwordInput.addEventListener('blur', function() {
+            validateField(this, document.getElementById('passwordValidation'));
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideMessages();
+
+            // Validate all fields
+            const isUsernameValid = validateField(usernameInput, document.getElementById('usernameValidation'));
+            const isPasswordValid = validateField(passwordInput, document.getElementById('passwordValidation'));
+
+            if (!isUsernameValid || !isPasswordValid) {
+                showMessage(errorMessage, 'Please fill in all required fields.');
+                return;
+            }
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loading.style.display = 'block';
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('username', usernameInput.value.trim());
+            formData.append('password', passwordInput.value);
+
+            // Submit form
+            fetch('login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage(successMessage, 'Login successful! Redirecting...', false);
+                    setTimeout(() => {
+                        window.location.href = 'main.html';
+                    }, 1500);
+                } else {
+                    showMessage(errorMessage, data.message || 'Login failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage(errorMessage, 'An error occurred. Please try again later.');
+            })
+            .finally(() => {
+                loginBtn.disabled = false;
+                loading.style.display = 'none';
+            });
+        });
+
+        // Check if user is already logged in
+        fetch('main?format=json')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = 'main.html';
+            }
+        })
+        .catch(error => {
+            // User not logged in, stay on login page
+            console.log('User not logged in');
+        });
+    });
+</script>
+</body>
+</html>

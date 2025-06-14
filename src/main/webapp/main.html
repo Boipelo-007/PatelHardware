@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patel Hardware - Main</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            outline: none;
+        }
+
+        .search-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #34495e;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            color: #2d5a27;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .menu-item {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #3498db;
+        }
+
+        .menu-item h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .menu-item p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .menu-item.main-menu {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .menu-item.main-menu h3,
+        .menu-item.main-menu p {
+            color: white;
+        }
+
+        .menu-item.view-items {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+        }
+
+        .menu-item.view-items h3,
+        .menu-item.view-items p {
+            color: white;
+        }
+
+        .menu-item.buy-item {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .menu-item.buy-item h3,
+        .menu-item.buy-item p {
+            color: white;
+        }
+
+        .menu-item.view-cart {
+            background: linear-gradient(135deg, #8e44ad, #7d3c98);
+            color: white;
+        }
+
+        .menu-item.view-cart h3,
+        .menu-item.view-cart p {
+            color: white;
+        }
+
+        .logout-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .user-info {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .user-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-input {
+                width: 250px;
+            }
+
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="nav-container">
+        <div class="nav-menu">
+            <a href="main.html">Home</a>
+            <a href="viewall.html">View All Items</a>
+            <a href="buyitem.html">Buy an Item</a>
+            <a href="viewcart.html">View Cart</a>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search Items">
+            <button class="search-btn" id="searchBtn">🔍</button>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="loading" id="loading"></div>
+
+    <div id="mainContent" style="display: none;">
+        <div class="user-info" id="userInfo">
+            <h3>Welcome back!</h3>
+            <p id="userDetails">Loading user information...</p>
+        </div>
+
+        <div class="welcome-section">
+            <h1>Patel Hardware</h1>
+            <p>Welcome to the Patel hardware web application. Please select one of the options below:</p>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-item main-menu" onclick="location.href='main.html'">
+                <h3>Main Menu</h3>
+                <p>Return to the main navigation and overview of all available options.</p>
+            </div>
+
+            <div class="menu-item view-items" onclick="location.href='viewall.html'">
+                <h3>View all Items</h3>
+                <p>Browse through our complete inventory of hardware items with detailed descriptions and prices.</p>
+            </div>
+
+            <div class="menu-item buy-item" onclick="location.href='buyitem.html'">
+                <h3>Buy an Item</h3>
+                <p>Search for specific items and add them to your cart for purchase.</p>
+            </div>
+
+            <div class="menu-item view-cart" onclick="location.href='viewcart.html'">
+                <h3>View Cart</h3>
+                <p>Review items in your shopping cart, update quantities, and proceed to checkout.</p>
+            </div>
+        </div>
+
+        <div class="logout-section">
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loading = document.getElementById('loading');
+        const mainContent = document.getElementById('mainContent');
+        const userInfo = document.getElementById('userInfo');
+        const userDetails = document.getElementById('userDetails');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        // Show loading initially
+        loading.style.display = 'block';
+
+        // Check authentication and load user data
+        fetch('main?format=json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Not authenticated');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success && data.user) {
+                // Display user information
+                const user = data.user;
+                userDetails.innerHTML = `
+                    <strong>Name:</strong> ${user.fullName || user.username}<br>
+                    <strong>Email:</strong> ${user.email}<br>
+                    <strong>Username:</strong> ${user.username}
+                `;
+
+                // Show main content
+                loading.style.display = 'none';
+                mainContent.style.display = 'block';
+            } else {
+                throw new Error('Authentication failed');
+            }
+        })
+        .catch(error => {
+            console.error('Authentication error:', error);
+            // Redirect to login if not authenticated
+            window.location.href = 'login.html';
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('main?action=logout&format=json', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = 'login.html';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    // Force redirect to login page
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+
+        // Search functionality
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `search.html?query=${encodeURIComponent(query)}`;
+            }
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        location.href = 'viewall.html';
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        location.href = 'buyitem.html';
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        location.href = 'viewcart.html';
+                        break;
+                    case '/':
+                        e.preventDefault();
+                        searchInput.focus();
+                        break;
+                }
+            }
+        });
+
+        // Add tooltips for keyboard shortcuts
+        const menuItems = document.querySelectorAll('.menu-item');
+        const shortcuts = ['', 'Ctrl+1', 'Ctrl+2', 'Ctrl+3'];
+
+        menuItems.forEach((item, index) => {
+            if (shortcuts[index]) {
+                item.title = `Click to navigate or press ${shortcuts[index]}`;
+            }
+        });
+
+        searchInput.title = 'Press Ctrl+/ to focus search';
+    });
+</script>
+</body>
+</html>

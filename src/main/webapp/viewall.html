@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patel Hardware - View All Items</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            outline: none;
+        }
+
+        .search-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #34495e;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            color: #2d5a27;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .filter-group select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .items-table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #87ceeb, #4682b4);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .table-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .items-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .items-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .items-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .items-table tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .items-table tr:nth-child(even):hover {
+            background: #f0f2f5;
+        }
+
+        .item-number {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 16px;
+        }
+
+        .item-available {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .item-available.yes {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .item-available.no {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .buy-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .summary-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #8e44ad;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: 2px solid #8e44ad;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            background: #8e44ad;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-items {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-input {
+                width: 250px;
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                min-width: auto;
+            }
+
+            .items-table {
+                font-size: 14px;
+            }
+
+            .items-table th,
+            .items-table td {
+                padding: 10px 5px;
+            }
+
+            .summary-section {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .items-table-container {
+                overflow-x: auto;
+            }
+
+            .items-table {
+                min-width: 700px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="nav-container">
+        <div class="nav-menu">
+            <a href="main.html">Home</a>
+            <a href="viewall.html" class="active">View All Items</a>
+            <a href="buyitem.html">Buy an Item</a>
+            <a href="viewcart.html">View Cart</a>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search Items">
+            <button class="search-btn" id="searchBtn">🔍</button>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="page-header">
+        <h1>View All Items</h1>
+        <p>Below is the list of all the items in the hardware</p>
+    </div>
+
+    <div class="filters-section">
+        <div class="filters-row">
+            <div class="filter-group">
+                <label for="categoryFilter">Filter by Category:</label>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="availabilityFilter">Availability:</label>
+                <select id="availabilityFilter">
+                    <option value="">All Items</option>
+                    <option value="true">Available Only</option>
+                    <option value="false">Out of Stock</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy">
+                    <option value="item_number">Item Number</option>
+                    <option value="name">Name</option>
+                    <option value="price">Price</option>
+                    <option value="category">Category</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading" id="loading"></div>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+    <div class="items-table-container" id="itemsContainer" style="display: none;">
+        <div class="table-header">
+            <h2>Hardware Items Inventory</h2>
+            <p>Complete list of available hardware items</p>
+        </div>
+        <table class="items-table">
+            <thead>
+            <tr>
+                <th>ITEM#</th>
+                <th>NAME</th>
+                <th>COLOR</th>
+                <th>DESCRIPTION</th>
+                <th>PRICE</th>
+                <th>AVAILABLE</th>
+                <th>ACTION</th>
+            </tr>
+            </thead>
+            <tbody id="itemsTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary-section" id="summarySection" style="display: none;">
+        <div class="summary-row">
+            <span>Total Items:</span>
+            <span id="totalItems">0</span>
+        </div>
+        <div class="summary-row">
+            <span>Available Items:</span>
+            <span id="availableItems">0</span>
+        </div>
+        <div class="summary-row">
+            <span>Total Inventory Value:</span>
+            <span id="totalValue">R0.00</span>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="main.html">Go back to Main Menu</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loading = document.getElementById('loading');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const summarySection = document.getElementById('summarySection');
+        const itemsTableBody = document.getElementById('itemsTableBody');
+        const errorMessage = document.getElementById('errorMessage');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const availabilityFilter = document.getElementById('availabilityFilter');
+        const sortBy = document.getElementById('sortBy');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        let allItems = [];
+        let filteredItems = [];
+
+        // Load items data
+        function loadItems() {
+            loading.style.display = 'block';
+            itemsContainer.style.display = 'none';
+            summarySection.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            fetch('viewall?format=json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch items');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    allItems = data.items;
+                    filteredItems = [...allItems];
+
+                    loadCategories();
+                    displayItems();
+                    updateSummary();
+
+                    loading.style.display = 'none';
+                    itemsContainer.style.display = 'block';
+                    summarySection.style.display = 'block';
+                } else {
+                    throw new Error(data.message || 'Failed to load items');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading items:', error);
+                loading.style.display = 'none';
+                errorMessage.textContent = 'Error loading items: ' + error.message;
+                errorMessage.style.display = 'block';
+            });
+        }
+
+        // Load categories for filter
+        function loadCategories() {
+            const categories = [...new Set(allItems.map(item => item.category).filter(cat => cat))];
+            categories.sort();
+
+            categoryFilter.innerHTML = '<option value="">All Categories</option>';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Display items in table
+        function displayItems() {
+            if (filteredItems.length === 0) {
+                itemsTableBody.innerHTML = '<tr><td colspan="7" class="no-items">No items found matching your criteria.</td></tr>';
+                return;
+            }
+
+            itemsTableBody.innerHTML = '';
+
+            filteredItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="item-number">${item.itemNumber}</td>
+                    <td class="item-name">${item.name}</td>
+                    <td>${item.color || '-'}</td>
+                    <td>${item.description || '-'}</td>
+                    <td class="item-price">R${item.price.toFixed(2)}</td>
+                    <td>
+                        <span class="item-available ${item.available ? 'yes' : 'no'}">
+                            ${item.available ? 'Yes' : 'No'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="buy-btn" onclick="buyItem(${item.itemId})"
+                                ${!item.available ? 'disabled' : ''}>
+                            ${item.available ? 'Buy this item' : 'Out of Stock'}
+                        </button>
+                    </td>
+                `;
+                itemsTableBody.appendChild(row);
+            });
+        }
+
+        // Update summary information
+        function updateSummary() {
+            const totalItems = filteredItems.length;
+            const availableItems = filteredItems.filter(item => item.available).length;
+            const totalValue = filteredItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('availableItems').textContent = availableItems;
+            document.getElementById('totalValue').textContent = `R${totalValue.toFixed(2)}`;
+        }
+
+        // Filter and sort items
+        function applyFilters() {
+            filteredItems = [...allItems];
+
+            // Category filter
+            const selectedCategory = categoryFilter.value;
+            if (selectedCategory) {
+                filteredItems = filteredItems.filter(item => item.category === selectedCategory);
+            }
+
+            // Availability filter
+            const selectedAvailability = availabilityFilter.value;
+            if (selectedAvailability !== '') {
+                const isAvailable = selectedAvailability === 'true';
+                filteredItems = filteredItems.filter(item => item.available === isAvailable);
+            }
+
+            // Sort items
+            const sortField = sortBy.value;
+            filteredItems.sort((a, b) => {
+                let aVal = a[sortField];
+                let bVal = b[sortField];
+
+                if (sortField === 'price') {
+                    return parseFloat(aVal) - parseFloat(bVal);
+                }
+
+                if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+                if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+
+                return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            });
+
+            displayItems();
+            updateSummary();
+        }
+
+        // Buy item function
+        window.buyItem = function(itemId) {
+            window.location.href = `buyitem.html?itemId=${itemId}`;
+        };
+
+        // Search functionality
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `search.html?query=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Event listeners
+        categoryFilter.addEventListener('change', applyFilters);
+        availabilityFilter.addEventListener('change', applyFilters);
+        sortBy.addEventListener('change', applyFilters);
+
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Initial load
+        loadItems();
+
+        // Check authentication
+        fetch('main?format=json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Not authenticated');
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Authentication error:', error);
+            window.location.href = 'login.html';
+        });
+    });
+</script>
+</body>
+</html>
